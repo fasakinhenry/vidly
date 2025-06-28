@@ -1,50 +1,22 @@
 {
-  
   "name": "vidly",
-  
   "version": "1.0.0",
-  
   "description": "",
-  
   "main": "index.js",
-  
   "scripts": {
-  
-    
-  "test": "echo \"Error: no test specified\" && exit 1",
-  
-    
-  "dev": "npm start"
-  
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm start"
   },
-  
   "keywords": [],
-  
   "author": "",
-  
   "license": "ISC",
-  
   "type": "commonjs",
-  
   "dependencies": {
-  
-    
-  "config": "^4.0.0",
-  
-    
-  "express": "^5.1.0",
-  
-    
-  "helmet": "^8.1.0",
-  
-    
-  "joi": "^17.13.3",
-  
-    
-  "mongoose": "^8.16.1",
-  
-    
-  "morgan": "^1.10.0"
-  
+    "config": "^4.0.0",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "mongoose": "^8.16.1",
+    "morgan": "^1.10.0"
   }
 }

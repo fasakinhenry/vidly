@@ -1,0 +1,6 @@
+{
+  "name": "Vidly - Production Configuration",
+  "logging": {
+    "level": "error"
+  }
+}
