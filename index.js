@@ -1,8 +1,13 @@
 const express = require('express');
 const app = express();
 const Joi = require('joi');
+const morgan = require('morgan');
+const helmet = require('helmet');
 const router = express.Router();
 app.use(express.json());
+
+app.use(morgan('tiny'));
+app.use(helmet());
 
 const genres = [
   { id: 1, name: 'Action' },
@@ -11,12 +16,12 @@ const genres = [
 ];
 
 // Get all genres
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.json(genres);
 });
 
 // Get a genre by ID
-router.get('/:id', (req, res) => {
+app.get('/:id', (req, res) => {
   const genre = genres.find((g) => g.id === parseInt(req.params.id));
   if (!genre)
     return res.status(404).send('The Genre with the given ID was not found');
@@ -24,7 +29,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Create a new genre
-router.post('/', (req, res) => {
+app.post('/', (req, res) => {
   const { error } = Joi.object({
     name: Joi.string().min(3).required(),
   }).validate(req.body);
@@ -40,7 +45,7 @@ router.post('/', (req, res) => {
 });
 
 // Update a genre
-router.put('/:id', (req, res) => {
+app.put('/:id', (req, res) => {
   const genre = genres.find((g) => g.id === parseInt(req.params.id));
   if (!genre) return res.status(404).send('Genre not found');
 
@@ -52,7 +57,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete a genre
-router.delete('/:id', (req, res) => {
+app.delete('/:id', (req, res) => {
   const genreIndex = genres.findIndex((g) => g.id === parseInt(req.params.id));
   if (genreIndex === -1) return res.status(404).send('Genre not found');
 
