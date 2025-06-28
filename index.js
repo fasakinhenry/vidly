@@ -6,7 +6,10 @@ const helmet = require('helmet');
 const router = express.Router();
 app.use(express.json());
 
-app.use(morgan('tiny'));
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));
+  console.log('Morgan enabled...');
+}
 app.use(helmet());
 
 const genres = [

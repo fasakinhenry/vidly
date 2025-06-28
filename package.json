@@ -29,6 +29,9 @@
   "dependencies": {
   
     
+  "config": "^4.0.0",
+  
+    
   "express": "^5.1.0",
   
     
