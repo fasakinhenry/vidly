@@ -21,7 +21,7 @@ const genres = [
 ];
 
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Vidly - Home' });
+    res.render('index', { title: 'Vidly - Home', message: 'Welcome to Vidly!' });
 });
 
 port = process.env.PORT || 3000;
