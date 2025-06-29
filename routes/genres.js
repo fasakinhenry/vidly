@@ -16,7 +16,7 @@ const Genre = mongoose.model('Genre', genreSchema);
 
 // Get all genres
 router.get('/', async (req, res) => {
-  const genres = await Genre.find();
+  const genres = await Genre.find().sort('name');
   res.json(genres);
 });
 
@@ -43,23 +43,25 @@ router.post('/', async (req, res) => {
 
 // Update a genre
 router.put('/:id', async (req, res) => {
-  const genre = await Genre.findById(req.params.id);
-  if (!genre) return res.status(404).send('Genre not found');
+  const { error } = validateGenre(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
 
-  const { name } = req.body;
-  if (!name) return res.status(400).send('Name is required');
+  const genre = await Genre.findByIdAndUpdate(
+    req.params.id,
+    { name: req.body.name },
+    { new: true }
+  );
+  if (!genre) return res.status(404).send('The Genre with the given ID was not found');
 
-  genre.name = name;
   res.json(genre);
 });
 
 // Delete a genre
-router.delete('/:id', (req, res) => {
-  const genreIndex = genres.findIndex((g) => g.id === parseInt(req.params.id));
-  if (genreIndex === -1) return res.status(404).send('Genre not found');
+router.delete('/:id', async (req, res) => {
+  const genre = await Genre.findByIdAndRemove(req.params.id);
+  if (!genre) return res.status(404).send('The Genre with the given ID was not found');
 
-  const deletedGenre = genres.splice(genreIndex, 1);
-  res.json(deletedGenre[0]);
+  res.json(genre);
 });
 
 function validateGenre(genre) {
