@@ -33,9 +33,7 @@ app.get('/:id', (req, res) => {
 
 // Create a new genre
 app.post('/', (req, res) => {
-  const { error } = Joi.object({
-    name: Joi.string().min(3).required(),
-  }).validate(req.body);
+  const { error } = validateGenre(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -67,6 +65,14 @@ app.delete('/:id', (req, res) => {
   const deletedGenre = genres.splice(genreIndex, 1);
   res.json(deletedGenre[0]);
 });
+
+function validateGenre(genre) {
+  const schema = Joi.object({
+    name: Joi.string().min(3).required(),
+  });
+  return schema.validate(genre);
+    
+}
 
 port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));

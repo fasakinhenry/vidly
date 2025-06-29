@@ -13,6 +13,7 @@
   "type": "commonjs",
   "dependencies": {
     "config": "^4.0.0",
+    "debug": "^4.4.1",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "joi": "^17.13.3",
