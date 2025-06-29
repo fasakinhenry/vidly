@@ -1,10 +1,19 @@
+const express = require('express');
+const router = express.Router();
+
+const genres = [
+  { id: 1, name: 'Action' },
+  { id: 2, name: 'Comedy' },
+  { id: 3, name: 'Drama' },
+];
+
 // Get all genres
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   res.json(genres);
 });
 
 // Get a genre by ID
-app.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const genre = genres.find((g) => g.id === parseInt(req.params.id));
   if (!genre)
     return res.status(404).send('The Genre with the given ID was not found');
@@ -12,7 +21,7 @@ app.get('/:id', (req, res) => {
 });
 
 // Create a new genre
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
   const { error } = validateGenre(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);
@@ -26,7 +35,7 @@ app.post('/', (req, res) => {
 });
 
 // Update a genre
-app.put('/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const genre = genres.find((g) => g.id === parseInt(req.params.id));
   if (!genre) return res.status(404).send('Genre not found');
 
@@ -38,7 +47,7 @@ app.put('/:id', (req, res) => {
 });
 
 // Delete a genre
-app.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const genreIndex = genres.findIndex((g) => g.id === parseInt(req.params.id));
   if (genreIndex === -1) return res.status(404).send('Genre not found');
 
@@ -52,3 +61,5 @@ function validateGenre(genre) {
   });
   return schema.validate(genre);
 }
+
+module.exports = router;
