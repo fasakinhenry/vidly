@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Movie, validate } = require('../models/genres.js');
+const { Movie, validate } = require('../models/movies.js');
+const { Genre } = require('../models/genres.js');
 
 // Get all movies
 router.get('/', async (req, res) => {
@@ -19,23 +20,23 @@ router.get('/:id', async (req, res) => {
 // Create a new movie
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error);
 
   // Check if the genre exists
   const genre = await Genre.findById(req.body.genre);
   if (!genre) return res.status(400).send('Invalid genre.');
 
-  const newMovie = new Movie({
+  const movie = new Movie({
     title: req.body.title,
     genre: {
       _id: genre._id,
-      name: genre.name
+      name: genre.name,
     },
     numberInStock: req.body.numberInStock,
     dailyRentalRate: req.body.dailyRentalRate,
   });
-  await newMovie.save();
-  res.status(201).json(newMovie);
+  await movie.save();
+  res.status(201).json(movie);
 });
 
 // Update a movie
