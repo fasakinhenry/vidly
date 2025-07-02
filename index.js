@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const home = require('./routes/home');
 const genres = require('./routes/genres');
+const movies = require('./routes/movies');
 const customers = require('./routes/customers');
 app.use(express.json());
 app.set('view engine', 'pug');
@@ -23,6 +24,7 @@ if (app.get('env') === 'development') {
 app.use('/', home);
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/movies', movies);
 
-port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
