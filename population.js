@@ -12,6 +12,10 @@ const Author = mongoose.model('Author', new mongoose.Schema({
 
 const Course = mongoose.model('Course', new mongoose.Schema({
   name: String,
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Author'
+  }
 }));
 
 async function createAuthor(name, bio, website) { 
@@ -38,12 +42,13 @@ async function createCourse(name, author) {
 async function listCourses() { 
   const courses = await Course
     .find()
+    .populate('author', 'name -_id')
     .select('name');
   console.log(courses);
 }
 
-createAuthor('Mosh', 'My bio', 'My Website');
+// createAuthor('Mosh', 'My bio', 'My Website');
 
-// createCourse('Node Course', 'authorId')
+// createCourse('Node Course', '68644e600c2cfaff23bac746')
 
-// listCourses();
+listCourses();
