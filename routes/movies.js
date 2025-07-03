@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
 // Create a new movie
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error);
+  if (error) return res.status(400).send(error.details[0].message);
 
   // Check if the genre exists
   const genre = await Genre.findById(req.body.genre);
