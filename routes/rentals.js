@@ -4,13 +4,13 @@ const { Rental, validate } = require('../models/rentals');
 const { Movie } = require('../models/movies');
 const { Customer } = require('../models/customers');
 
-// Get all rentals
+// GET all rentals
 router.get('/', async (req, res) => {
   const rentals = await Rental.find().sort('-dateOut');
   res.json(rentals);
 });
 
-// Get a rental by ID
+// GET rental by ID
 router.get('/:id', async (req, res) => {
   const rental = await Rental.findById(req.params.id);
   if (!rental)
@@ -18,21 +18,23 @@ router.get('/:id', async (req, res) => {
   res.json(rental);
 });
 
-// Create a new rental
-router.post('/:id', async (req, res) => {
-  // validate the body of the request
+// POST new rental (mocked transaction)
+router.post('/', async (req, res) => {
+  // Validate request body
   const { error } = validate(req.body);
-  if (!error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send(error.details[0].message);
 
-  const customer = await Customer.findById(req.params.id);
-  if (!customer) return res.status(400).send('Invalid customer');
+  const { customerId, movieId } = req.body;
 
-  const movie = await Movie.findById(req.params.id);
-  if (!movie) return res.status(400).send('Invalid movie');
+  const customer = await Customer.findById(customerId);
+  if (!customer) return res.status(400).send('Invalid customer.');
 
-  if (movie.numberInstock === 0)
-    return res.status(400).send('Movie not in stock');
-  // create a new rental
+  const movie = await Movie.findById(movieId);
+  if (!movie) return res.status(400).send('Invalid movie.');
+
+  if (movie.numberInStock === 0)
+    return res.status(400).send('Movie not in stock.');
+
   const rental = new Rental({
     customer: {
       _id: customer._id,
@@ -45,12 +47,20 @@ router.post('/:id', async (req, res) => {
       dailyRentalRate: movie.dailyRentalRate,
     },
   });
-  // save the rental
-  rental = await rental.save();
 
-  //   Decrement the number of movies in stock
-  movie.numberInStock--;
-  movie.save();
-  // send the created rental to the client
-  res.json(rental);
+  try {
+    const savedRental = await rental.save();
+
+    movie.numberInStock--;
+    await movie.save();
+
+    res.json(savedRental);
+  } catch (err) {
+    // If movie save fails, rollback rental
+    await Rental.deleteOne({ _id: rental._id });
+    console.error('Error saving rental or updating movie:', err);
+    res.status(500).send('Something failed while saving the rental.');
+  }
 });
+
+module.exports = router;
