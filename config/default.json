@@ -1,3 +1,4 @@
 {
-    "name": "vidly - Development Configuration"
+    "name": "vidly - Development Configuration",
+    "jwtPrivateKey": ""
 }
