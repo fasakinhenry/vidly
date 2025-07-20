@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require('config');
 const app = express();
+const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const home = require('./routes/home');
@@ -10,6 +11,11 @@ const customers = require('./routes/customers');
 const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://vidlyclips.vercel.app']
+}));
+
 app.use(express.json());
 app.set('view engine', 'pug');
 app.set('views', './views');
