@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/auth.js')
 const { Genre, validate} = require('../models/genres.js')
 
 // Get all genres
@@ -17,7 +18,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create a new genre
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) return res.status(400).send(error.details[0].message);

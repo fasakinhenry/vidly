@@ -1,10 +1,17 @@
 const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
-const { User, validate } = require('../models/users.js');
+const { User, validate } = require('../models/users');
 const bcrypt = require('bcrypt');
+const auth = require('../middleware/auth')
 
-// Create a new genre
+// get the current user
+router.post('/me', auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password');
+  res.json(user);
+})
+
+// Create a new user(signup)
 router.post('/', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
