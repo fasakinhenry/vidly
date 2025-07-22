@@ -13,7 +13,9 @@ const users = require('./routes/users');
 const auth = require('./routes/auth');
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://vidlyclips.vercel.app']
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://vidlyclips.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow all necessary methods
+  allowedHeaders: ['Content-Type', 'x-auth-token'], // Allow required headers
 }));
 
 app.use(express.json());
@@ -26,7 +28,7 @@ if (!config.get('jwtPrivateKey')) {
 }
 
 mongoose
-  .connect('mongodb://localhost/vidly')
+  .connect('mongodb://localhost:27017/vidly')
   .then(() => console.log('Connected to MongoDB...'))
   .catch((err) => console.error('Could not connect to MongoDB...', err));
 

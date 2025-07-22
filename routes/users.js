@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const auth = require('../middleware/auth')
 
 // get the current user
-router.post('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.json(user);
 })
