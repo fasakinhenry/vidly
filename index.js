@@ -1,5 +1,5 @@
+require('dotenv').config();
 const express = require('express');
-const config = require('config');
 const app = express();
 const cors = require('cors');
 const morgan = require('morgan');
@@ -14,25 +14,32 @@ const auth = require('./routes/auth');
 
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:5173', 'https://vidlyclips.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow all necessary methods
-  allowedHeaders: ['Content-Type', 'x-auth-token'], // Allow required headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'x-auth-token'],
+  exposedHeaders: ['x-auth-token']
 }));
 
 app.use(express.json());
 app.set('view engine', 'pug');
 app.set('views', './views');
 
-if (!config.get('jwtPrivateKey')) {
-  console.error('FATAL ERROR: jwtPrivateKey is not defined');
+// Check for required environment variables
+if (!process.env.JWT_PRIVATE_KEY) { // Changed from vidly_jwtPrivateKey
+  console.error('FATAL ERROR: JWT_PRIVATE_KEY is not defined');
+  process.exit(1);
+}
+
+if (!process.env.MONGODB_URI) {
+  console.error('FATAL ERROR: MONGODB_URI is not defined');
   process.exit(1);
 }
 
 mongoose
-  .connect('mongodb://localhost:27017/vidly')
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB...'))
   .catch((err) => console.error('Could not connect to MongoDB...', err));
 
-if (app.get('env') === 'development') {
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'));
   console.log('Morgan enabled...');
 }
